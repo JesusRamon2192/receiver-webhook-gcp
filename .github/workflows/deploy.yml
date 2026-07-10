@@ -1,0 +1,36 @@
+name: Deploy Cloud Function to GCP
+
+on:
+  push:
+    branches:
+      - main # El despliegue se activa automáticamente cuando hay cambios en la rama main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Autenticación usando un secreto de GitHub.
+    # Necesitas configurar el secreto 'GCP_CREDENTIALS' en tu repositorio de GitHub.
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    # El comando mágico que le dice a GCP qué crear y cómo configurarlo
+    - name: Deploy Cloud Function (Gen 2 / Cloud Run)
+      run: |
+        gcloud functions deploy receive-new-relic-webhook \
+          --gen2 \
+          --runtime=python310 \
+          --region=us-central1 \
+          --source=. \
+          --entry-point=receive_webhook \
+          --trigger-http \
+          --allow-unauthenticated
