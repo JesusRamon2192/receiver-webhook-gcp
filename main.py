@@ -4,7 +4,7 @@ from google.cloud import pubsub_v1
 from flask import make_response
 
 import functions_framework
-
+#hola
 # Inicializa el cliente fuera de la función para reutilizar la conexión en instancias cálidas
 publisher = pubsub_v1.PublisherClient()
 PROJECT_ID = 'alerts-etl'  # El ID de tu proyecto asignado directamente como texto
